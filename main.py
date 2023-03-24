@@ -72,4 +72,14 @@ subscriber_list = youtube.channels().list(
     part="statistics",
     fields='items(id, statistics(subscriberCount))'
 ).execute()
-print(subscriber_list['items'][:5])
+
+subscribers = []
+for item in subscriber_list['items']:
+    subscriber = {}
+    subscriber['channel_id'] = item['id']
+    subscriber['subscriber_count'] = item['statistics']['subscriberCount']
+    subscribers.append(subscriber)
+    print(subscribers)
+
+df_subscribers = pd.DataFrame(subscribers)
+print(df_subscribers[:3])
