@@ -51,4 +51,25 @@ YOUTUBE_API_VERSION = "v3"
 youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVELOPER_KEY)
 
 df_video = video_search(youtube, q='Python 自動化', max_results=30)
-print(df_video[:3])
+# print(df_video[:3])
+
+"""
+・uniqueで重複を削除
+・tolistでレスポンスをリスト化
+"""
+channel_ids = df_video['channel_id'].unique().tolist()
+# print(channel_ids)
+
+"""
+idはカンマ区切りリストの形式
+statisticsはチャンネルの統計情報
+fildsは特定のプロパティだけを返す
+　➡︎statisticsの中の特定の情報（登録者数）を返すように使う
+"""
+
+subscriber_list = youtube.channels().list(
+    id=','.join(channel_ids),
+    part="statistics",
+    fields='items(id, statistics(subscriberCount))'
+).execute()
+print(subscriber_list['items'][:5])
