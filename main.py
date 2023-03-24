@@ -77,9 +77,12 @@ subscribers = []
 for item in subscriber_list['items']:
     subscriber = {}
     subscriber['channel_id'] = item['id']
-    subscriber['subscriber_count'] = item['statistics']['subscriberCount']
+    subscriber['subscriber_count'] = int(item['statistics']['subscriberCount'])
     subscribers.append(subscriber)
-    print(subscribers)
+    # print(subscribers)
 
 df_subscribers = pd.DataFrame(subscribers)
-print(df_subscribers[:3])
+df = pd.merge(left=df_video, right=df_subscribers, on='channel_id')
+# print(df)
+df_extracted = df[df['subscriber_count'] < 5000]
+print(df_extracted)
