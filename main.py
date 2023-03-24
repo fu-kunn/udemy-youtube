@@ -3,6 +3,8 @@ from apiclient.discovery import build
 # from oauth2client.tools import argparser
 
 import os
+import pandas as pd
+
 # # .envファイルの内容を読み込見込む
 from dotenv import load_dotenv
 load_dotenv()
@@ -37,7 +39,14 @@ response = youtube.search().list(
 ).execute()
 
 # print(response)
-
+items_id = []
 items = response['items']
-item = items[0]
-print(item)
+for item in items:
+    item_id = {}
+    item_id['video_id'] = item['id']['videoId']
+    item_id['channel_id'] = item['snippet']['channelId']
+    items_id.append(item_id)
+
+df_video = pd.DataFrame(items_id)
+
+print(df_video)
