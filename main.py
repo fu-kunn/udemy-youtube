@@ -94,4 +94,16 @@ videos_list = youtube.videos().list(
     part='snippet, statistics',
     fields='items(id, snippet(title), statistics(viewCount))'
 ).execute()
-print(videos_list['items'][:3])
+# print(videos_list['items'][:3])
+
+videos_info = []
+items = videos_list['items']
+for item in items:
+    video_info = {}
+    video_info['video_id'] = item['id']
+    video_info['title'] = item['snippet']['title']
+    video_info['view_count'] = item['statistics']['viewCount']
+    videos_info.append(video_info)
+
+df_videos_info = pd.DataFrame(videos_info)
+print(df_videos_info)
