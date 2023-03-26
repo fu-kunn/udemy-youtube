@@ -109,6 +109,10 @@ df_videos_info = pd.DataFrame(videos_info)
 # print(df_videos_info)
 
 results = pd.merge(left=df_extracted, right=df_videos_info, on='video_id')
+# print(results)
+
+"""
+グラフの列順を変更
+"""
+results = results.loc[:, ['video_id', 'title', 'view_count', 'subscriber_count', 'channel_id']]
 print(results)
-
-
