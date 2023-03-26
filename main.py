@@ -4,20 +4,21 @@ from apiclient.discovery import build
 
 import os
 import pandas as pd
+import streamlit as st
 
 # # .envファイルの内容を読み込見込む
 from dotenv import load_dotenv
 load_dotenv()
 
 
-"""
-■パラメータ
-q:検索クエリ
-part:リソースのプロパティをカンマ区切りでリスト化
-viewCount:再生回数の多い順に並べる
-video:動画
-maxResults:検索結果の最大数
-"""
+# """
+# ■パラメータ
+# q:検索クエリ
+# part:リソースのプロパティをカンマ区切りでリスト化
+# viewCount:再生回数の多い順に並べる
+# video:動画
+# maxResults:検索結果の最大数
+# """
 
 def video_search(youtube, q='自動化', max_results=50):
 # q = 'Python 自動化'
@@ -55,19 +56,19 @@ youtube = build(YOUTUBE_API_SERVICE_NAME, YOUTUBE_API_VERSION, developerKey=DEVE
 df_video = video_search(youtube, q='Python 自動化', max_results=30)
 
 def get_results(df_video, threshold=5000):
-    """
-    ・uniqueで重複を削除
-    ・tolistでレスポンスをリスト化
-    """
+    # """
+    # ・uniqueで重複を削除
+    # ・tolistでレスポンスをリスト化
+    # """
     channel_ids = df_video['channel_id'].unique().tolist()
 
 
-    """
-    idはカンマ区切りリストの形式
-    statisticsはチャンネルの統計情報
-    fildsは特定のプロパティだけを返す
-    　➡︎statisticsの中の特定の情報（登録者数）を返すように使う
-    """
+    # """
+    # idはカンマ区切りリストの形式
+    # statisticsはチャンネルの統計情報
+    # fildsは特定のプロパティだけを返す
+    # 　➡︎statisticsの中の特定の情報（登録者数）を返すように使う
+    # """
 
     subscriber_list = youtube.channels().list(
         id=','.join(channel_ids),
@@ -91,10 +92,10 @@ def get_results(df_video, threshold=5000):
     df_extracted = df[df['subscriber_count'] < threshold]
     video_ids = df_extracted['video_id'].tolist()
 
-    """
-    snippet(title):動画のタイトル
-    statistics(viewCount):チャンネルの再生回数
-    """
+    # """
+    # snippet(title):動画のタイトル
+    # statistics(viewCount):チャンネルの再生回数
+    # """
     videos_list = youtube.videos().list(
         id=','.join(video_ids),
         part='snippet, statistics',
@@ -119,5 +120,12 @@ def get_results(df_video, threshold=5000):
     return results
 
 df_video = video_search(youtube, q='Python Excel', max_results=50)
-test = get_results(df_video, threshold=1000)
-print(test)
+results = get_results(df_video, threshold=10000)
+# print(results[:3])
+
+
+st.title('YouTube分析アプリ')
+
+st.sidebar.write('## クエリと閾値の設定')
+st.sidebar.write('## クエリの入力')
+query = st.sidebar.text_input('検索クエリを入力してくだい', 'Python 自動化')
