@@ -79,10 +79,19 @@ for item in subscriber_list['items']:
     subscriber['channel_id'] = item['id']
     subscriber['subscriber_count'] = int(item['statistics']['subscriberCount'])
     subscribers.append(subscriber)
-    # print(subscribers)
 
 df_subscribers = pd.DataFrame(subscribers)
 df = pd.merge(left=df_video, right=df_subscribers, on='channel_id')
-# print(df)
-df_extracted = df[df['subscriber_count'] < 5000]
-print(df_extracted)
+df_extracted = df[df['subscriber_count'] < 10000]
+video_ids = df_extracted['video_id'].tolist()
+
+"""
+snippet(title):動画のタイトル
+statistics(viewCount):チャンネルの再生回数
+"""
+videos_list = youtube.videos().list(
+    id=','.join(video_ids),
+    part='snippet, statistics',
+    fields='items(id, snippet(title), statistics(viewCount))'
+).execute()
+print(videos_list['items'][:3])
