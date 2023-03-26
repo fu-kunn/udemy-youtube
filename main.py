@@ -78,8 +78,12 @@ def get_results(df_video, threshold=5000):
     subscribers = []
     for item in subscriber_list['items']:
         subscriber = {}
-        subscriber['channel_id'] = item['id']
-        subscriber['subscriber_count'] = int(item['statistics']['subscriberCount'])
+        if len(item['statistics']) > 0:
+            subscriber['channel_id'] = item['id']
+            subscriber['subscriber_count'] = int(item['statistics']['subscriberCount'])
+        else:
+            subscriber['channel_id'] = item['id']
+
         subscribers.append(subscriber)
 
     df_subscribers = pd.DataFrame(subscribers)
@@ -115,5 +119,5 @@ def get_results(df_video, threshold=5000):
     return results
 
 df_video = video_search(youtube, q='Python Excel', max_results=50)
-test = get_results(df_video, threshold=5000)
+test = get_results(df_video, threshold=1000)
 print(test)
