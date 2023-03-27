@@ -119,10 +119,6 @@ def get_results(df_video, threshold=5000):
 
     return results
 
-df_video = video_search(youtube, q='Python Excel', max_results=50)
-results = get_results(df_video, threshold=10000)
-# print(results[:3])
-
 
 st.title('YouTube分析アプリ')
 
@@ -130,5 +126,22 @@ st.sidebar.write('## クエリと閾値の設定')
 st.sidebar.write('### クエリの入力')
 query = st.sidebar.text_input('検索クエリを入力してくだい', 'Python 自動化')
 
+
 st.sidebar.write('## 閾値の設定')
-st.sidebar.slider('登録者数の閾値', 100, 10000, 5000)
+threshold = st.sidebar.slider('登録者数の閾値', 100, 10000, 5000)
+
+
+st.write('### 選択中のパラメータ')
+st.markdown(f"""
+- 検索クエリ：{query}
+- 登録者数の閾値：{threshold}
+""")
+
+
+df_video = video_search(youtube, q=query, max_results=50)
+results = get_results(df_video, threshold=threshold)
+
+st.write('### 分析結果', results)
+st.write('### 動画再生')
+
+video_id = st.text_input('動画IDを入力してください')
