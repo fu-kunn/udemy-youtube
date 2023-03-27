@@ -128,7 +128,7 @@ query = st.sidebar.text_input('検索クエリを入力してくだい', 'Python
 
 
 st.sidebar.write('## 閾値の設定')
-threshold = st.sidebar.slider('登録者数の閾値', 100, 10000, 5000)
+threshold = st.sidebar.slider('登録者数の閾値', 100, 100000, 5000)
 
 
 st.write('### 選択中のパラメータ')
@@ -145,3 +145,17 @@ st.write('### 分析結果', results)
 st.write('### 動画再生')
 
 video_id = st.text_input('動画IDを入力してください')
+url = f'https://youtu.be/{video_id}'
+
+video_field = st.empty()
+video_field.write('こちらに動画が表示されます')
+
+# """
+# ビデオIDがない場合にはエラーを表示
+# """
+if st.button('ビデオ表示'):
+    if len(video_id) > 0:
+        try:
+            video_field.video(url)
+        except:
+            st.error('何かエラーが起きています！！')
